@@ -80,10 +80,14 @@ const getDataAndSeed = async (endPoint: string) => {
 };
 
 const main = async () => {
+  console.log(`Dropping Tables.`);
   await dropAllTables();
+
+  console.log(`Fetching Swapi.`);
   for (const endPoint of endPoints) {
     await getDataAndSeed(endPoint);
   }
+  console.log(`Creating relations in DB.`);
   await createRelations();
 };
 main()
