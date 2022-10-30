@@ -16,20 +16,20 @@ enum Model {
   SPECIE = 'specie',
 }
 
-export default (prisma): DbConnect => {
+export default (db): DbConnect => {
   const dbDisconnect = async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   };
 
   const modelCreateMany = async (model: string, data: ModelData[]) => {
-    await prisma[model].createMany({ data });
+    await db[model].createMany({ data });
   };
 
   const formatConnect = async (model: Model, swapiIds: number[]) => {
     const ids: { id: number }[] = [];
 
     for (const swapiId of swapiIds) {
-      const { id }: { id: number } = await prisma[model].findUnique({
+      const { id }: { id: number } = await db[model].findUnique({
         where: { swapiId },
       });
       ids.push({ id });
@@ -38,24 +38,22 @@ export default (prisma): DbConnect => {
   };
 
   const dropAllTables = async () => {
-    await Promise.all([
-      prisma.character.deleteMany({}),
-      prisma.film.deleteMany({}),
-      prisma.planet.deleteMany({}),
-      prisma.specie.deleteMany({}),
-      prisma.starship.deleteMany({}),
-      prisma.vehicle.deleteMany({}),
-    ]);
+    await db.character.deleteMany({});
+    await db.film.deleteMany({});
+    await db.planet.deleteMany({});
+    await db.specie.deleteMany({});
+    await db.starship.deleteMany({});
+    await db.vehicle.deleteMany({});
   };
 
   const createSpecieRelations = async () => {
-    const count = await prisma.specie.count();
+    const count = await db.specie.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const specie = await prisma.specie.findUnique({ where: { swapiId } });
+      const specie = await db.specie.findUnique({ where: { swapiId } });
 
       if (specie) {
-        await prisma.specie.update({
+        await db.specie.update({
           where: { swapiId },
           data: {
             people: {
@@ -74,13 +72,13 @@ export default (prisma): DbConnect => {
   };
 
   const createVehicleRelations = async () => {
-    const count = await prisma.vehicle.count();
+    const count = await db.vehicle.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const vehicle = await prisma.vehicle.findUnique({ where: { swapiId } });
+      const vehicle = await db.vehicle.findUnique({ where: { swapiId } });
 
       if (vehicle) {
-        await prisma.vehicle.update({
+        await db.vehicle.update({
           where: { swapiId },
           data: {
             pilots: {
@@ -99,13 +97,13 @@ export default (prisma): DbConnect => {
   };
 
   const createStarshipRelations = async () => {
-    const count = await prisma.starship.count();
+    const count = await db.starship.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const starship = await prisma.starship.findUnique({ where: { swapiId } });
+      const starship = await db.starship.findUnique({ where: { swapiId } });
 
       if (starship) {
-        await prisma.starship.update({
+        await db.starship.update({
           where: { swapiId },
           data: {
             pilots: {
@@ -124,13 +122,13 @@ export default (prisma): DbConnect => {
   };
 
   const createFilmRelations = async () => {
-    const count = await prisma.film.count();
+    const count = await db.film.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const film = await prisma.film.findUnique({ where: { swapiId } });
+      const film = await db.film.findUnique({ where: { swapiId } });
 
       if (film) {
-        await prisma.film.update({
+        await db.film.update({
           where: { swapiId },
           data: {
             characters: {
@@ -161,13 +159,13 @@ export default (prisma): DbConnect => {
   };
 
   const createPlanetRelations = async () => {
-    const count = await prisma.planet.count();
+    const count = await db.planet.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const planet = await prisma.planet.findUnique({ where: { swapiId } });
+      const planet = await db.planet.findUnique({ where: { swapiId } });
 
       if (planet) {
-        await prisma.planet.update({
+        await db.planet.update({
           where: { swapiId },
           data: {
             residents: {
@@ -186,15 +184,15 @@ export default (prisma): DbConnect => {
   };
 
   const createCharacterRelations = async () => {
-    const count = await prisma.character.count();
+    const count = await db.character.count();
     for (let i = 1; i <= count; i++) {
       const swapiId = String(i);
-      const character = await prisma.character.findUnique({
+      const character = await db.character.findUnique({
         where: { swapiId },
       });
 
       if (character) {
-        await prisma.character.update({
+        await db.character.update({
           where: { swapiId },
           data: {
             homeworld: {
