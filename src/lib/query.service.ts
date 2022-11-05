@@ -1,6 +1,7 @@
-import { IFindAllQuery, IFindOneQuery } from 'src/dto';
+import { IFindAllQuery } from 'src/dto';
+import { IFindOneCharacter } from '../people/dto';
 
-type Query = IFindAllQuery & IFindOneQuery;
+type Query = IFindAllQuery & IFindOneCharacter;
 
 export class QueryHelper {
   constructor(private query: Query) {}

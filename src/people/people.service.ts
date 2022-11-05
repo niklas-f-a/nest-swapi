@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IFindAllQuery, IFindOneQuery } from 'src/dto';
+import { IFindAllQuery } from 'src/dto';
+import { IFindOneCharacter } from './dto';
 import { HelperService } from 'src/lib/helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -12,7 +13,7 @@ export class PeopleService {
     return this.prisma.character.findMany({ skip: page, take: limit });
   }
 
-  async findOne(id: string, queries: IFindOneQuery) {
+  async findOne(id: string, queries: IFindOneCharacter) {
     const query = Object.entries(queries).reduce((previous, current) => {
       return current[1] ? { ...previous, [current[0]]: current[1] } : previous;
     }, {});

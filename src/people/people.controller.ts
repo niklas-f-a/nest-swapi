@@ -1,5 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { IFindAllQuery, IFindOneQuery } from '../dto';
+import { IFindAllQuery } from '../dto';
+import { IFindOneCharacter } from './dto';
 import { PeopleService } from './people.service';
 import { FindAllQuery, FindOneQuery } from 'src/decorators';
 
@@ -13,7 +14,7 @@ export class PeopleController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @FindOneQuery() query: IFindOneQuery) {
+  findOne(@Param('id') id: string, @FindOneQuery() query: IFindOneCharacter) {
     return this.peopleService.findOne(id, query);
   }
 }
