@@ -1,18 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { IFindAllQuery, IFindOneQuery } from 'src/dto';
+import { HelperService } from 'src/lib/helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PeopleQueryDto } from './dto';
 
 @Injectable()
 export class PeopleService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private helper: HelperService) {}
 
-  checkLimit(limit: number): number {
-    return limit < 1 || limit > 10 ? 10 : limit;
+  findAll(query: IFindAllQuery) {
+    const { page, limit } = query;
+    return this.prisma.character.findMany({ skip: page, take: limit });
   }
 
-  findAll(query: PeopleQueryDto) {
-    const { page, homeworld, species } = query;
-    const limit = this.checkLimit(query.limit);
-    return this.prisma.character.findMany({ skip: page, take: limit });
+  async findOne(id: string, queries: IFindOneQuery) {
+    const query = Object.entries(queries).reduce((previous, current) => {
+      return current[1] ? { ...previous, [current[0]]: current[1] } : previous;
+    }, {});
+
+    return this.helper.isObjectEmpty(query)
+      ? await this.prisma.character.findUnique({ where: { id } })
+      : await this.prisma.character.findUnique({
+          where: { id },
+          include: query,
+        });
   }
 }
