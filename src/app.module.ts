@@ -5,6 +5,7 @@ import { People } from './people/people.module';
 import { Planets } from './planets/planets.module';
 import { Films } from './films/films.module';
 import { Starships } from './starships/starships.module';
+import { Vehicles } from './vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Starships } from './starships/starships.module';
     Planets,
     Films,
     Starships,
+    Vehicles,
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
