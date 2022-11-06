@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { FindAllQueryDto } from 'src/dto';
-import { FindOneCharacterDto } from './dto';
+import { CreateCharDto, FindOneCharacterDto } from './dto';
 import { HelperService } from 'src/lib/helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Character } from '@prisma/client';
@@ -29,9 +29,7 @@ export class PeopleService {
   }
 
   async findOne(id: string, queries: FindOneCharacterDto): Promise<Character> {
-    const includeQuery = Object.entries(queries).reduce((previous, current) => {
-      return current[1] ? { ...previous, [current[0]]: current[1] } : previous;
-    }, {});
+    const includeQuery = this.helper.includeQuery(queries);
 
     return await this.prisma.character.findUnique({
       where: { id },
@@ -55,6 +53,28 @@ export class PeopleService {
         InternalServerErrorException,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async create(dto: CreateCharDto) {
+    const { homeworld, films, species, vehicles, starships, ...rest } = dto;
+    const relations = this.helper.filterUndefinedIds({
+      homeworld,
+      films,
+      species,
+      vehicles,
+      starships,
+    });
+
+    try {
+      return await this.prisma.character.create({
+        data: {
+          ...rest,
+          ...relations,
+        },
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 }

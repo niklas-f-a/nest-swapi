@@ -25,7 +25,7 @@ model Character {
   starships Starship[]
   created DateTime @default(now())
   edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   planetSwapiId String[]
   filmSwapiId String[]
@@ -52,7 +52,7 @@ model Planet {
   films Film[]
   created DateTime @default(now())
   edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   characterSwapiId String[]
   filmSwapiId String[]
@@ -73,7 +73,7 @@ model Film {
   species Specie[]
   created DateTime @default(now())
   edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   characterSwapiId String[]
   planetSwapiID String[]
@@ -101,7 +101,7 @@ model Starship {
 	films Film[]
 	created DateTime @default(now())
 	edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   characterSwapiId String[]
   filmSwapiId String[]
@@ -124,7 +124,7 @@ model Vehicle {
 	films Film[]
 	created DateTime @default(now())
 	edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   characterSwapiId String[]
   filmSwapiId String[]
@@ -146,7 +146,7 @@ model Specie {
   films Film[]
   created DateTime @default(now())
   edited DateTime @updatedAt
-  swapiId String @unique
+  swapiId String? @unique
 
   characterSwapiId String[]
   filmSwapiId String[]

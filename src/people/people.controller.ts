@@ -5,12 +5,13 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 import { FindAllQueryDto } from '../dto';
 import { PeopleService } from './people.service';
 import { Character } from '@prisma/client';
-import { FindOneCharacterDto } from './dto';
+import { CreateCharDto, FindOneCharacterDto } from './dto';
 import { UpdateCharDto } from './dto/updateChar.dto';
 
 @Controller('people')
@@ -43,5 +44,10 @@ export class PeopleController {
   @Delete(':id')
   delete(@Param('id') id: string): Promise<{ message: string }> {
     return this.peopleService.delete(id);
+  }
+
+  @Post()
+  create(@Body() dto: CreateCharDto) {
+    return this.peopleService.create(dto);
   }
 }
