@@ -7,4 +7,4 @@ import { FilmsService } from './films.service';
   controllers: [FilmsController],
   providers: [FilmsService, HelperService],
 })
-export class Planets {}
+export class Films {}

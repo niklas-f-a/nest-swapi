@@ -20,7 +20,7 @@ export class FilmsService {
 
     return {
       count,
-      character: await this.prisma.film.findMany({ skip, take }),
+      films: await this.prisma.film.findMany({ skip, take }),
     };
   }
 

@@ -7,10 +7,14 @@ import {
 import { FindAllQueryDto } from 'src/dto';
 import { HelperService } from 'src/lib/helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreatePlanetDto, FindOnePlanetDto, UpdatePlanetDto } from './dto';
+import {
+  CreateStarshipDto,
+  FindOneStarshipDto,
+  UpdateStarshipDto,
+} from './dto/';
 
 @Injectable()
-export class PlanetService {
+export class StarshipsService {
   constructor(private prisma: PrismaService, private helper: HelperService) {}
 
   async findAll(query: FindAllQueryDto) {
@@ -20,29 +24,28 @@ export class PlanetService {
 
     return {
       count,
-      planets: await this.prisma.planet.findMany({ skip, take }),
+      starships: await this.prisma.starship.findMany({ skip, take }),
     };
   }
 
-  async findOne(id: string, query: FindOnePlanetDto) {
+  async findOne(id: string, query: FindOneStarshipDto) {
     const includeQuery = this.helper.includeQuery(query);
-    console.log(includeQuery);
 
-    return this.prisma.planet.findUnique({
+    return this.prisma.starship.findUnique({
       where: { id },
       include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
     });
   }
 
-  async update(id: string, dto: UpdatePlanetDto) {
-    const { films, residents, ...rest } = dto;
+  async update(id: string, dto: UpdateStarshipDto) {
+    const { films, pilots, ...rest } = dto;
     const relations = this.helper.filterUndefinedIds({
-      residents,
+      pilots,
       films,
     });
 
     try {
-      return await this.prisma.planet.update({
+      return await this.prisma.starship.update({
         where: { id },
         data: { ...rest, ...relations },
       });
@@ -53,8 +56,8 @@ export class PlanetService {
 
   async delete(id: string) {
     try {
-      await this.prisma.planet.delete({ where: { id } });
-      return { message: `Planet with ${id} deleted` };
+      await this.prisma.starship.delete({ where: { id } });
+      return { message: `Starship with ${id} deleted` };
     } catch {
       throw new HttpException(
         InternalServerErrorException,
@@ -63,15 +66,15 @@ export class PlanetService {
     }
   }
 
-  async create(dto: CreatePlanetDto) {
-    const { residents, films, ...rest } = dto;
+  async create(dto: CreateStarshipDto) {
+    const { pilots, films, ...rest } = dto;
     const relations = this.helper.filterUndefinedIds({
-      residents,
+      pilots,
       films,
     });
 
     try {
-      return await this.prisma.planet.create({
+      return await this.prisma.starship.create({
         data: {
           ...rest,
           ...relations,
