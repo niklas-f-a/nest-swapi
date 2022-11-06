@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 interface ConnectIds {
-  homeworld: { id: string };
-  films: { id: string };
-  species: { id: string };
-  vehicles: { id: string };
-  starships: { id: string };
+  homeworld?: { id: string };
+  films?: { id: string };
+  species?: { id: string };
+  vehicles?: { id: string };
+  starships?: { id: string };
+  residents?: { id: string };
 }
 
 @Injectable()

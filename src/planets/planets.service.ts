@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { FindAllQueryDto } from 'src/dto';
 import { HelperService } from 'src/lib/helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FindOnePlanetDto } from './dto';
+import { CreatePlanetDto, FindOnePlanetDto, UpdatePlanetDto } from './dto';
 
 @Injectable()
 export class PlanetService {
   constructor(private prisma: PrismaService, private helper: HelperService) {}
+
   async findAll(query: FindAllQueryDto) {
     const count = await this.prisma.planet.count();
     const take = this.helper.checkLimit(query?.limit);
@@ -28,15 +34,51 @@ export class PlanetService {
     });
   }
 
-  async update() {
-    return 'hell'
+  async update(id: string, dto: UpdatePlanetDto) {
+    const { films, residents, ...rest } = dto;
+    const relations = this.helper.filterUndefinedIds({
+      residents,
+      films,
+    });
+
+    try {
+      return await this.prisma.planet.update({
+        where: { id },
+        data: { ...rest, ...relations },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async delete() {
-    return 'bing'
+  async delete(id: string) {
+    try {
+      await this.prisma.planet.delete({ where: { id } });
+      return { message: `Planet with ${id} deleted` };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async create() {
-    return 'bdbdbdbdbd'
+  async create(dto: CreatePlanetDto) {
+    const { residents, films, ...rest } = dto;
+    const relations = this.helper.filterUndefinedIds({
+      residents,
+      films,
+    });
+
+    try {
+      return await this.prisma.planet.create({
+        data: {
+          ...rest,
+          ...relations,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

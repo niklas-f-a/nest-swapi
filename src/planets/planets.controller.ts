@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -9,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Planet } from '@prisma/client';
 import { FindAllQueryDto } from 'src/dto';
-import { FindOnePlanetDto } from './dto';
+import { CreatePlanetDto, FindOnePlanetDto, UpdatePlanetDto } from './dto';
 import { PlanetService } from './planets.service';
 
 @Controller('planets')
@@ -30,17 +31,20 @@ export class PlanetsController {
   }
 
   @Patch(':id')
-  update() {
-    return this.planetService.update();
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePlanetDto,
+  ): Promise<Planet> {
+    return this.planetService.update(id, dto);
   }
 
   @Delete(':id')
-  delete() {
-    return this.planetService.delete();
+  delete(@Param('id') id: string): Promise<{ message: string }> {
+    return this.planetService.delete(id);
   }
 
   @Post()
-  create() {
-    return this.planetService.create();
+  create(@Body() dto: CreatePlanetDto): Promise<Planet> {
+    return this.planetService.create(dto);
   }
 }
