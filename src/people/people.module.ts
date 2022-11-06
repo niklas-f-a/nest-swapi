@@ -8,4 +8,4 @@ import { PeopleService } from './people.service';
   providers: [PeopleService, HelperService],
   controllers: [PeopleController],
 })
-export class PeopleModule {}
+export class People {}

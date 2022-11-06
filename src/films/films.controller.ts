@@ -20,7 +20,7 @@ export class FilmsController {
   @Get()
   findAll(
     @Query() query: FindAllQueryDto,
-  ): Promise<{ count: number; character: Film[] }> {
+  ): Promise<{ count: number; films: Film[] }> {
     return this.filmService.findAll(query);
   }
 
