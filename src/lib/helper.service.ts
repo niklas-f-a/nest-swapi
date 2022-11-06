@@ -7,6 +7,8 @@ interface ConnectIds {
   vehicles?: { id: string };
   starships?: { id: string };
   residents?: { id: string };
+  characters?: { id: string };
+  planets?: { id: string };
 }
 
 @Injectable()
