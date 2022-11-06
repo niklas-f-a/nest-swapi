@@ -10,6 +10,7 @@ interface ConnectIds {
   characters?: { id: string };
   planets?: { id: string };
   pilots?: { id: string };
+  people?: { id: string };
 }
 
 @Injectable()

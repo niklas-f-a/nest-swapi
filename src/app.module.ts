@@ -6,6 +6,7 @@ import { Planets } from './planets/planets.module';
 import { Films } from './films/films.module';
 import { Starships } from './starships/starships.module';
 import { Vehicles } from './vehicles/vehicles.module';
+import { Species } from './species/species.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Vehicles } from './vehicles/vehicles.module';
     Films,
     Starships,
     Vehicles,
+    Species,
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
