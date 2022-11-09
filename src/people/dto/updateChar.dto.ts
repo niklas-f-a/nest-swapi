@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCharDto {
   @IsOptional()
@@ -32,4 +32,24 @@ export class UpdateCharDto {
   @IsOptional()
   @IsString()
   gender?: string;
+
+  @IsOptional()
+  @IsObject()
+  homeworld?: { id: string };
+
+  @IsOptional()
+  @IsObject()
+  films?: { id: string };
+
+  @IsOptional()
+  @IsObject()
+  species?: { id: string };
+
+  @IsOptional()
+  @IsObject()
+  vehicles?: { id: string };
+
+  @IsOptional()
+  @IsObject()
+  starships?: { id: string };
 }

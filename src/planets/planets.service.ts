@@ -18,20 +18,33 @@ export class PlanetService {
     const take = this.helper.checkLimit(query?.limit);
     const skip = this.helper.checkPage(query?.page);
 
-    return {
-      count,
-      planets: await this.prisma.planet.findMany({ skip, take }),
-    };
+    try {
+      return {
+        count,
+        planets: await this.prisma.planet.findMany({ skip, take }),
+      };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string, query: FindOnePlanetDto) {
     const includeQuery = this.helper.includeQuery(query);
-    console.log(includeQuery);
 
-    return this.prisma.planet.findUnique({
-      where: { id },
-      include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
-    });
+    try {
+      return this.prisma.planet.findUnique({
+        where: { id },
+        include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
+      });
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async update(id: string, dto: UpdatePlanetDto) {
@@ -47,7 +60,10 @@ export class PlanetService {
         data: { ...rest, ...relations },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -78,7 +94,10 @@ export class PlanetService {
         },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

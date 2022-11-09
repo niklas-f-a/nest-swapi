@@ -22,26 +22,58 @@ export class PeopleService {
     const take = this.helper.checkLimit(query?.limit);
     const skip = this.helper.checkPage(query?.page);
 
-    return {
-      count,
-      character: await this.prisma.character.findMany({ skip, take }),
-    };
+    try {
+      return {
+        count,
+        character: await this.prisma.character.findMany({ skip, take }),
+      };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string, queries: FindOneCharacterDto): Promise<Character> {
     const includeQuery = this.helper.includeQuery(queries);
 
-    return await this.prisma.character.findUnique({
-      where: { id },
-      include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
-    });
+    try {
+      return await this.prisma.character.findUnique({
+        where: { id },
+        include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
+      });
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async update(id: string, characterDto: UpdateCharDto) {
-    return await this.prisma.character.update({
-      where: { id },
-      data: { ...characterDto },
+    const { homeworld, films, species, vehicles, starships, ...rest } =
+      characterDto;
+
+    const relations = this.helper.filterUndefinedIds({
+      homeworld,
+      films,
+      species,
+      vehicles,
+      starships,
     });
+
+    try {
+      return await this.prisma.character.update({
+        where: { id },
+        data: { ...rest, ...relations },
+      });
+    } catch (error) {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async delete(id: string) {
@@ -74,7 +106,10 @@ export class PeopleService {
         },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

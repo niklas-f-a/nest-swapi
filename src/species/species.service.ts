@@ -18,19 +18,33 @@ export class SpeciesService {
     const take = this.helper.checkLimit(query?.limit);
     const skip = this.helper.checkPage(query?.page);
 
-    return {
-      count,
-      species: await this.prisma.specie.findMany({ skip, take }),
-    };
+    try {
+      return {
+        count,
+        species: await this.prisma.specie.findMany({ skip, take }),
+      };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string, query: FindOneSpecieDto) {
     const includeQuery = this.helper.includeQuery(query);
 
-    return this.prisma.specie.findUnique({
-      where: { id },
-      include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
-    });
+    try {
+      return this.prisma.specie.findUnique({
+        where: { id },
+        include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
+      });
+    } catch (error) {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async update(id: string, dto: UpdateSpecieDto) {
@@ -46,7 +60,10 @@ export class SpeciesService {
         data: { ...rest, ...relations },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -77,7 +94,10 @@ export class SpeciesService {
         },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

@@ -22,19 +22,33 @@ export class StarshipsService {
     const take = this.helper.checkLimit(query?.limit);
     const skip = this.helper.checkPage(query?.page);
 
-    return {
-      count,
-      starships: await this.prisma.starship.findMany({ skip, take }),
-    };
+    try {
+      return {
+        count,
+        starships: await this.prisma.starship.findMany({ skip, take }),
+      };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string, query: FindOneStarshipDto) {
     const includeQuery = this.helper.includeQuery(query);
 
-    return this.prisma.starship.findUnique({
-      where: { id },
-      include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
-    });
+    try {
+      return this.prisma.starship.findUnique({
+        where: { id },
+        include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
+      });
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async update(id: string, dto: UpdateStarshipDto) {
@@ -50,7 +64,10 @@ export class StarshipsService {
         data: { ...rest, ...relations },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -81,7 +98,10 @@ export class StarshipsService {
         },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

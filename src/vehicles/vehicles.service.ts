@@ -18,19 +18,33 @@ export class VehiclesService {
     const take = this.helper.checkLimit(query?.limit);
     const skip = this.helper.checkPage(query?.page);
 
-    return {
-      count,
-      starships: await this.prisma.vehicle.findMany({ skip, take }),
-    };
+    try {
+      return {
+        count,
+        starships: await this.prisma.vehicle.findMany({ skip, take }),
+      };
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string, query: FindOneVehicleDto) {
     const includeQuery = this.helper.includeQuery(query);
 
-    return this.prisma.vehicle.findUnique({
-      where: { id },
-      include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
-    });
+    try {
+      return this.prisma.vehicle.findUnique({
+        where: { id },
+        include: this.helper.isObjectEmpty(includeQuery) ? null : includeQuery,
+      });
+    } catch {
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async update(id: string, dto: UpdateVehicleDto) {
@@ -46,7 +60,10 @@ export class VehiclesService {
         data: { ...rest, ...relations },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -77,7 +94,10 @@ export class VehiclesService {
         },
       });
     } catch (error) {
-      console.log(error);
+      throw new HttpException(
+        InternalServerErrorException,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
